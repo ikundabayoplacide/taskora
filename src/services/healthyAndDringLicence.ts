@@ -14,7 +14,7 @@ export class HealthAndDrivingLicenseService {
         });
         return healthAndDrivingLicense ? healthAndDrivingLicense.dataValues : null;
     }
-    static async updateHealthAndDrivingLicense(userId: number|string, updateData:Partial<healthAndDrivingAttributes>): Promise<[number, HealthAndDrivingLicense[]]> {
+    static async updateHealthAndDrivingLicense(userId: number | string, updateData: Partial<healthAndDrivingAttributes>): Promise<[number]> {
         const result = await HealthAndDrivingLicense.update(updateData, { where: { userId } });
         return result;
     }

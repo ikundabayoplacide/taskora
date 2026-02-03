@@ -4,8 +4,8 @@ import { Request, Response } from "express";
 
 export class PersonalLocationController{
     // create a new location
-    async createLocation(req:Request, res:Response){
-        try{
+    async createLocation(req: Request, res: Response) {
+        try {
             const locationData = req.body;
             const location = await PersonalLocationService.createLocation(locationData);
             
@@ -16,8 +16,8 @@ export class PersonalLocationController{
                 message: "Location created successfully",
                 data: location
             });
-        } catch (error:Error | any){ {
-                 return ResponseService({
+        } catch (error: Error | any) {
+            return ResponseService({
                 res,
                 status: 500,
                 success: false,
@@ -25,15 +25,14 @@ export class PersonalLocationController{
                 data: null
             });
         }
-    } }
+    }
 
     // get location by userId
-    async getLocationByUserId(req:Request, res:Response){
-        try{
+    async getLocationByUserId(req: Request, res: Response) {
+        try {
             const userId = req.params.userId;
-            const location = await PersonalLocationService.getLocationByUserId(userId);
             
-            if(!userId){
+            if (!userId) {
                 return ResponseService({
                     res,
                     status: 400,
@@ -42,7 +41,10 @@ export class PersonalLocationController{
                     data: null
                 });
             }
-            if(!location){
+            
+            const location = await PersonalLocationService.getLocationByUserId(userId);
+            
+            if (!location) {
                 return ResponseService({
                     res,
                     status: 404,
@@ -51,6 +53,7 @@ export class PersonalLocationController{
                     data: null
                 });
             }
+            
             return ResponseService({
                 res,
                 status: 200,
@@ -58,23 +61,44 @@ export class PersonalLocationController{
                 message: "Location retrieved successfully",
                 data: location
             });
-        } catch (error:Error | any){ {
-                 return ResponseService({
+        } catch (error: Error | any) {
+            return ResponseService({
                 res,
                 status: 500,
                 success: false,
-                message: error.message, 
+                message: error.message,
                 data: null
             });
         }
-    } }
+    }
 
     // update location
-    async updateLocation(req:Request, res:Response){
-        try{
+    async updateLocation(req: Request, res: Response) {
+        try {
             const userId = req.params.userId;
             const updateData = req.body;
+            
+            if (!userId) {
+                return ResponseService({
+                    res,
+                    status: 400,
+                    success: false,
+                    message: "User ID is required",
+                    data: null
+                });
+            }
+            
             const result = await PersonalLocationService.updateLocation(userId, updateData);
+            
+            if (!result) {
+                return ResponseService({
+                    res,
+                    status: 404,
+                    success: false,
+                    message: "Location not found",
+                    data: null
+                });
+            }
             
             return ResponseService({
                 res,
@@ -83,8 +107,8 @@ export class PersonalLocationController{
                 message: "Location updated successfully",
                 data: result
             });
-        } catch (error:Error | any){ {
-                 return ResponseService({
+        } catch (error: Error | any) {
+            return ResponseService({
                 res,
                 status: 500,
                 success: false,
@@ -92,13 +116,34 @@ export class PersonalLocationController{
                 data: null
             });
         }
-    } }
+    }
 
     // delete location
-    async deleteLocation(req:Request, res:Response){
-        try{
+    async deleteLocation(req: Request, res: Response) {
+        try {
             const userId = req.params.userId;
+            
+            if (!userId) {
+                return ResponseService({
+                    res,
+                    status: 400,
+                    success: false,
+                    message: "User ID is required",
+                    data: null
+                });
+            }
+            
             const deletedCount = await PersonalLocationService.deleteLocation(userId);
+            
+            if (deletedCount === 0) {
+                return ResponseService({
+                    res,
+                    status: 404,
+                    success: false,
+                    message: "Location not found",
+                    data: null
+                });
+            }
             
             return ResponseService({
                 res,
@@ -107,8 +152,8 @@ export class PersonalLocationController{
                 message: "Location deleted successfully",
                 data: deletedCount
             });
-        } catch (error:Error | any){ {
-                 return ResponseService({
+        } catch (error: Error | any) {
+            return ResponseService({
                 res,
                 status: 500,
                 success: false,
@@ -116,11 +161,11 @@ export class PersonalLocationController{
                 data: null
             });
         }
-    } }
+    }
 
     // get all locations
-    async getAllLocations(req:Request, res:Response){
-        try{
+    async getAllLocations(req: Request, res: Response) {
+        try {
             const locations = await PersonalLocationService.getAllLocations();
             
             return ResponseService({
@@ -130,8 +175,8 @@ export class PersonalLocationController{
                 message: "Locations retrieved successfully",
                 data: locations
             });
-        } catch (error:Error | any){ {
-                 return ResponseService({
+        } catch (error: Error | any) {
+            return ResponseService({
                 res,
                 status: 500,
                 success: false,
@@ -139,5 +184,5 @@ export class PersonalLocationController{
                 data: null
             });
         }
-    } }
+    }
 }

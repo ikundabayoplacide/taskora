@@ -3,31 +3,36 @@ import { otherPersonalAttributes } from "../types/profile";
 
 export class OtherUserProfile {
     // create a suppoter user profile
-    static async createSupporterProfile(profileData:otherPersonalAttributes): Promise<void> {
+    static async createSupporterProfile(profileData: otherPersonalAttributes): Promise<OtherPersonProfile> {
         const supportUserProfile = await OtherPersonProfile.create(profileData);
         return supportUserProfile;
     }
 
     // get supporter profile by userId
-    static async getSupporterProfileByUserId(userId: number|string): Promise<otherPersonalAttributes | null> {
-        const supportUserProfile = await OtherPersonProfile.getByUserId(userId);
+    static async getSupporterProfileByUserId(userId: number | string): Promise<OtherPersonProfile | null> {
+        const supportUserProfile = await OtherPersonProfile.findOne({ where: { userId } });
         return supportUserProfile;
     }
+    
     // update supporter profile
-    static async updateSupporterProfile(userId: number|string, updateData: Partial<otherPersonalAttributes>): Promise<void> {
-        const result = await OtherPersonProfile.update(userId, updateData);
-        return result;
+    static async updateSupporterProfile(userId: number | string, updateData: Partial<otherPersonalAttributes>): Promise<OtherPersonProfile | null> {
+        const [updatedCount] = await OtherPersonProfile.update(updateData, { where: { userId } });
+        if (updatedCount === 0) {
+            return null;
+        }
+        const updatedProfile = await OtherPersonProfile.findOne({ where: { userId } });
+        return updatedProfile;
     }
 
     // delete supporter profile
-    static async deleteSupporterProfile(userId: number|string): Promise<void> {
-        const deletedCount = await OtherPersonProfile.delete(userId);
+    static async deleteSupporterProfile(userId: number | string): Promise<number> {
+        const deletedCount = await OtherPersonProfile.destroy({ where: { userId } });
         return deletedCount;
     }
 
     // get all supporter profiles
-    static async getAllSupporterProfiles(): Promise<void> {
-        const supportUserProfiles = await OtherPersonProfile.getAll();
+    static async getAllSupporterProfiles(): Promise<OtherPersonProfile[]> {
+        const supportUserProfiles = await OtherPersonProfile.findAll();
         return supportUserProfiles;
     }
 }

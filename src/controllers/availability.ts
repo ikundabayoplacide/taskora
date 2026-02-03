@@ -29,7 +29,6 @@ export class UserAvailabilityController {
     static async getAvailabilityByUserId(req: Request, res: Response) {
         try {
             const userId = req.params.userId;
-            const availability = await UserAvailabilityService.getAvailabilityByUserId(userId);
 
             if (!userId) {
                 return ResponseService({
@@ -40,7 +39,10 @@ export class UserAvailabilityController {
                     data: null
                 });
             }
-            if (!availability) {
+            
+            const availability = await UserAvailabilityService.getAvailabilityByUserId(userId);
+            
+            if (!availability || availability.length === 0) {
                 return ResponseService({
                     res,
                     status: 404,
@@ -49,6 +51,7 @@ export class UserAvailabilityController {
                     data: null
                 });
             }
+            
             return ResponseService({
                 res,
                 status: 200,
@@ -72,7 +75,7 @@ export class UserAvailabilityController {
         try {
             const userId = req.params.userId;
             const updateData = req.body;
-            const result = await UserAvailabilityService.updateAvailability(userId, updateData);
+            
             if (!userId) {
                 return ResponseService({
                     res,
@@ -82,6 +85,8 @@ export class UserAvailabilityController {
                     data: null
                 });
             }
+            
+            const result = await UserAvailabilityService.updateAvailability(userId, updateData);
 
             if (!result) {
                 return ResponseService({
@@ -92,6 +97,7 @@ export class UserAvailabilityController {
                     data: null
                 });
             }
+            
             return ResponseService({
                 res,
                 status: 200,
@@ -114,7 +120,7 @@ export class UserAvailabilityController {
     static async deleteAvailability(req: Request, res: Response) {
         try {
             const userId = req.params.userId;
-            const deletedCount = await UserAvailabilityService.deleteAvailability(userId);
+            
             if (!userId) {
                 return ResponseService({
                     res,
@@ -124,6 +130,9 @@ export class UserAvailabilityController {
                     data: null
                 });
             }
+            
+            const deletedCount = await UserAvailabilityService.deleteAvailability(userId);
+            
             if (deletedCount === 0) {
                 return ResponseService({
                     res,
@@ -133,6 +142,7 @@ export class UserAvailabilityController {
                     data: null
                 });
             }
+            
             return ResponseService({
                 res,
                 status: 200,
